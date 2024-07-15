@@ -1,0 +1,71 @@
+const disposableAddSnippet = vscode.commands.registerCommand('vanto-snippet.addSnippet', async () => {
+		const editor = vscode.window.activeTextEditor;
+
+		if (!editor) {
+			vscode.window.showErrorMessage('');
+			return;
+		}
+
+		const document = editor.document;
+
+		const text = document.getText();
+
+		const title = await vscode.window.showInputBox({
+			placeHolder: "Enter snippet description"
+		});
+
+		if (title) {
+			vscode.window.showInformationMessage(title);
+		}
+	});
+
+    const disposableSyncSnippet = vscode.commands.registerCommand('vanto-snippet.syncSnippet', async () => {
+		const editor = vscode.window.activeTextEditor;
+
+		if (!editor) {
+			return;
+		}
+
+		const document = editor.document;
+
+		const entireText = document.getText();
+
+		const regex = /vanto:[\w-]+/g;
+		let matches = entireText.match(regex);
+
+		if (!matches) {
+			vscode.window.showErrorMessage('No se encontro nada');
+			return;
+		}
+
+		const fetchPromises = matches.map(async (match) => {
+			const tokenValue = match;
+			const tokenWithoutPrefix = tokenValue.substring(6);
+			return { match, text: `remplace:${tokenWithoutPrefix}` };
+		});
+
+		const results = await Promise.all(fetchPromises);
+
+		await editor.edit(editBuilder => {
+			results.forEach((result) => {
+				if (result) {
+					const { match, text } = result;
+					const startPosition = document.positionAt(entireText.indexOf(match));
+					const endPosition = document.positionAt(entireText.indexOf(match) + match.length);
+					const range = new vscode.Range(startPosition, endPosition);
+					editBuilder.replace(range, text);
+				}
+			});
+		});
+
+	});
+
+
+    {
+        "command": "vanto-snippet.addSnippet",
+        "title": "Add Snippet"
+      },
+      {
+        "command": "vanto-snippet.syncSnippet",
+        "title": "Sync Snippet"
+      }
