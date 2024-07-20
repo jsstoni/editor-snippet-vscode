@@ -11,10 +11,18 @@ export const disposableGetSnippet = async () => {
         return;
     }
 
+    const preferences = vscode.workspace.getConfiguration('vanto-snippet');
+    const token = preferences.get<string>('token');
+
+    if (!token) {
+        vscode.window.showErrorMessage('set the user token');
+        return;
+    }
+
     try {
         const response = await fetch(URL_BASE, {
             headers: {
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.MzYwNjExMQ.C0WjL5ZW3HUQRq1llnGOsHis_ktVNfS2KFgM0SJIJZE'
+                'Authorization': `Bearer ${token}`
             }
         });
 

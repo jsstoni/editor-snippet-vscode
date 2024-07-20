@@ -60,7 +60,6 @@ const disposableAddSnippet = vscode.commands.registerCommand('vanto-snippet.addS
 
 	});
 
-
     {
         "command": "vanto-snippet.addSnippet",
         "title": "Add Snippet"

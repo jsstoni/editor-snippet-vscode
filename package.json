@@ -34,14 +34,16 @@
         "command": "vanto-snippet.getSnippet",
         "title": "List my code snippets"
       }
-    ]
-  },
-  "configuration": {
-    "title": "Configure vanto snippet",
-    "proporties": {
-      "type": "string",
-      "default": "",
-      "description": "enter the user token for snippet extraction"
+    ],
+    "configuration": {
+      "title": "VantoSnippet",
+      "properties": {
+        "vanto-snippet.token": {
+          "type": "string",
+          "default": "",
+          "description": "enter the user token for snippet extraction"
+        }
+      }
     }
   },
   "scripts": {
